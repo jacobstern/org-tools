@@ -100,11 +100,48 @@ basicHeadlinesDocument =
           }
     }
 
+basicKeywordsDocument :: Document
+basicKeywordsDocument =
+  Document
+    { documentChildren =
+        HeadlineChildren
+          { headlineChildrenExtraLevel = Nothing
+          , headlineChildrenHeadlines =
+              [ Headline
+                  { headlineKeyword = Just "TODO"
+                  , headlineTitle = "Headline with a TODO keyword"
+                  , headlinePropertyDrawer = Nothing
+                  , headlineChildren = emptyHeadlineChildren
+                  }
+              , Headline
+                  { headlineKeyword = Nothing
+                  , headlineTitle = "Another headline"
+                  , headlinePropertyDrawer = Nothing
+                  , headlineChildren =
+                      HeadlineChildren
+                        { headlineChildrenExtraLevel = Nothing
+                        , headlineChildrenHeadlines =
+                            [ Headline
+                                { headlineKeyword = Just "TODO"
+                                , headlineTitle = "Another TODO keyword"
+                                , headlinePropertyDrawer = Nothing
+                                , headlineChildren = emptyHeadlineChildren
+                                }
+                            ]
+                        }
+                  }
+              ]
+          }
+    }
+
 main :: IO ()
 main =
   hspec $
   describe "printing" $
-  for_ [(basicHeadlinesDocument, "test/ref/basic-headlines.org")] $ \(document, filePath) ->
+  for_
+    [ (basicHeadlinesDocument, "test/ref/basic-headlines.org")
+    , (basicKeywordsDocument, "test/ref/basic-keywords.org")
+    ] $ \(document, filePath) ->
     it ("should match the expected output in " ++ filePath) $ do
       fileText <- T.readFile filePath
       printDocument document `shouldBe` fileText
