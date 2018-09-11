@@ -3,6 +3,7 @@ module Text.Org
   , Headline(..)
   , HeadlineChildren(..)
   , NodeProperty(..)
+  , PropertyDrawer(..)
   , emptyHeadlineChildren
   ) where
 
@@ -11,5 +12,6 @@ import Text.Org.Types
   , Headline(..)
   , HeadlineChildren(..)
   , NodeProperty(..)
+  , PropertyDrawer(..)
   , emptyHeadlineChildren
   )

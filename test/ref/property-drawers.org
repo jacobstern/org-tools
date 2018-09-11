@@ -1,0 +1,14 @@
+* CD collection
+** Classic
+   :PROPERTIES:
+   :Genres:   Classic
+   :END:
+*** Goldberg Variations
+    :PROPERTIES:
+    :Title:    Goldberg Variations
+    :Composer: J. S. Bach
+    :Artist:   Glen Gould
+    :Publisher: Deutsche Grammophon
+    :NDisks:   1
+    :Genres+:  Baroque
+    :END:

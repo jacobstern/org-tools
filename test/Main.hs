@@ -8,8 +8,6 @@ import Test.Hspec
 import Text.Org
 import Text.Org.PrettyPrint
 
-{-# ANN module ("HLint: ignore Redundant do" :: String) #-}
-
 basicHeadlinesDocument :: Document
 basicHeadlinesDocument =
   Document
@@ -134,6 +132,115 @@ basicKeywordsDocument =
           }
     }
 
+propertyDrawersDocument :: Document
+propertyDrawersDocument =
+  Document
+    { documentChildren =
+        HeadlineChildren
+          { headlineChildrenExtraLevel = Nothing
+          , headlineChildrenHeadlines =
+              [ Headline
+                  { headlineKeyword = Nothing
+                  , headlineTitle = "CD collection"
+                  , headlinePropertyDrawer = Nothing
+                  , headlineChildren =
+                      HeadlineChildren
+                        { headlineChildrenExtraLevel = Nothing
+                        , headlineChildrenHeadlines =
+                            [ Headline
+                                { headlineKeyword = Nothing
+                                , headlineTitle = "Classic"
+                                , headlinePropertyDrawer =
+                                    Just
+                                      PropertyDrawer
+                                        { propertyDrawerContents =
+                                            [ NodeProperty
+                                                { nodePropertyAdd = False
+                                                , nodePropertyName = "Genres"
+                                                , nodePropertyValue =
+                                                    Just "Classic"
+                                                }
+                                            ]
+                                        }
+                                , headlineChildren =
+                                    HeadlineChildren
+                                      { headlineChildrenExtraLevel = Nothing
+                                      , headlineChildrenHeadlines =
+                                          [ Headline
+                                              { headlineKeyword = Nothing
+                                              , headlineTitle =
+                                                  "Goldberg Variations"
+                                              , headlinePropertyDrawer =
+                                                  Just
+                                                    PropertyDrawer
+                                                      { propertyDrawerContents =
+                                                          [ NodeProperty
+                                                              { nodePropertyAdd =
+                                                                  False
+                                                              , nodePropertyName =
+                                                                  "Title"
+                                                              , nodePropertyValue =
+                                                                  Just
+                                                                    "Goldberg Variations"
+                                                              }
+                                                          , NodeProperty
+                                                              { nodePropertyAdd =
+                                                                  False
+                                                              , nodePropertyName =
+                                                                  "Composer"
+                                                              , nodePropertyValue =
+                                                                  Just
+                                                                    "J. S. Bach"
+                                                              }
+                                                          , NodeProperty
+                                                              { nodePropertyAdd =
+                                                                  False
+                                                              , nodePropertyName =
+                                                                  "Artist"
+                                                              , nodePropertyValue =
+                                                                  Just
+                                                                    "Glen Gould"
+                                                              }
+                                                          , NodeProperty
+                                                              { nodePropertyAdd =
+                                                                  False
+                                                              , nodePropertyName =
+                                                                  "Publisher"
+                                                              , nodePropertyValue =
+                                                                  Just
+                                                                    "Deutsche Grammophon"
+                                                              }
+                                                          , NodeProperty
+                                                              { nodePropertyAdd =
+                                                                  False
+                                                              , nodePropertyName =
+                                                                  "NDisks"
+                                                              , nodePropertyValue =
+                                                                  Just "1"
+                                                              }
+                                                          , NodeProperty
+                                                              { nodePropertyAdd =
+                                                                  True
+                                                              , nodePropertyName =
+                                                                  "Genres"
+                                                              , nodePropertyValue =
+                                                                  Just "Baroque"
+                                                              }
+                                                          ]
+                                                      }
+                                              , headlineChildren =
+                                                  emptyHeadlineChildren
+                                              }
+                                          ]
+                                      }
+                                }
+                            ]
+                        }
+                  }
+              ]
+          }
+    }
+
 main :: IO ()
 main =
   hspec $
@@ -141,6 +248,7 @@ main =
   for_
     [ (basicHeadlinesDocument, "test/ref/basic-headlines.org")
     , (basicKeywordsDocument, "test/ref/basic-keywords.org")
+    , (propertyDrawersDocument, "test/ref/property-drawers.org")
     ] $ \(document, filePath) ->
     it ("should match the expected output in " ++ filePath) $ do
       fileText <- T.readFile filePath

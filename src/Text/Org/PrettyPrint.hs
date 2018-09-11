@@ -28,7 +28,7 @@ printDocument Document {..} =
 
 printHeadline :: OutlineLevel -> Headline -> Lines
 printHeadline outlineLevel Headline {..} =
-  pure headline <> foldMap printPropertyDrawer headlinePropertyDrawer <>
+  pure headline <> foldMap printHeadlinePropertyDrawer headlinePropertyDrawer <>
   printHeadlineChildren outlineLevel headlineChildren
   where
     headline =
@@ -38,20 +38,36 @@ printHeadline outlineLevel Headline {..} =
         , headlineKeyword
         , pure headlineTitle
         ]
+    printHeadlinePropertyDrawer = printPropertyDrawer outlineLevel
 
-printNodeProperty :: NodeProperty -> Lines
-printNodeProperty NodeProperty {..} =
-  pure $ ":" <> propertyKey <> ": " <> fold nodePropertyValue
+propertyDrawerIndentation :: OutlineLevel -> Text
+propertyDrawerIndentation outlineLevel = T.replicate (outlineLevel + 1) " "
+
+printNodeProperty :: OutlineLevel -> NodeProperty -> Lines
+printNodeProperty outlineLevel NodeProperty {..} =
+  pure $
+  indentation <> ":" <> propertyKey <> ":" <> valueIndentation <>
+  fold nodePropertyValue
   where
+    valueIndentation = T.replicate valueIndentationSpacing " "
+    -- Align with end of line that begins drawer
+    valueIndentationSpacing = max 1 (9 - T.length propertyKey)
     propertyKey =
       if nodePropertyAdd
         then nodePropertyName <> "+"
         else nodePropertyName
+    indentation = propertyDrawerIndentation outlineLevel
 
-printPropertyDrawer :: PropertyDrawer -> Lines
-printPropertyDrawer PropertyDrawer {..} =
-  pure ":PROPERTIES:" <> foldMap printNodeProperty propertyDrawerContents <>
-  pure ":END:"
+printPropertyDrawer :: OutlineLevel -> PropertyDrawer -> Lines
+printPropertyDrawer outlineLevel PropertyDrawer {..} =
+  pure propertiesBegin <>
+  foldMap printContentsNodeProperty propertyDrawerContents <>
+  pure propertiesEnd
+  where
+    propertiesBegin = indentation <> ":PROPERTIES:"
+    propertiesEnd = indentation <> ":END:"
+    indentation = propertyDrawerIndentation outlineLevel
+    printContentsNodeProperty = printNodeProperty outlineLevel
 
 printHeadlineChildren :: OutlineLevel -> HeadlineChildren -> Lines
 printHeadlineChildren outlineLevel HeadlineChildren {..} =
